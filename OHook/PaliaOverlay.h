@@ -1096,6 +1096,15 @@ public:
 	float CustomJumpVelocity = 700.0f;  // Custom, Dynamic jump velocity
 	float CustomMaxStepHeight = 45.0f;  // Custom, Dynamic maximum step height
 
+	// These will be used for resetting back to default values
+	float dWalkSpeed = 565.0f;  // Default walk speed
+	float dSprintSpeedMultiplier = 1.65f;  // Default sprint speed multiplier
+	float dClimbingSpeed = 80.0f;  // Default climbing speed
+	float dGlidingSpeed = 900.0f;  // Default gliding speed
+	float dGlidingFallSpeed = 250.0f;  // Default gliding fall speed
+	float dJumpVelocity = 700.0f;  // Default jump velocity
+	float dMaxStepHeight = 45.0f;  // Default maximum step height
+
 	// Fishing Booleans
 	bool bEnableAutoFishing = false;
 	bool bRequireClickFishing = true;
@@ -1143,4 +1152,31 @@ public:
 
 	// Character Customiztion Booleans
 	bool bTempUnlockAllEntitlements = false;
+
+	// DEFAULT VALUES
+	// ESP Default values
+	bool defaultEnableESP = false;
+	bool defaultEnableESPCulling = false;
+	int defaultCullDistance = 500;  // Default culling distance
+	bool defaultDrawFOVCircle = false;
+	float defaultFOVRadius = 100.0f;  // Default radius
+
+	// Aim Default values
+	bool defaultEnableSilentAimbot = false;
+	bool defaultEnableAimbot = false;
+	bool defaultTeleportToTargeted = false;
+	bool defaultAvoidTeleportingToPlayers = false;
+	bool defaultEnableLootbagTeleportation = false;
+	bool defaultAddAnimalToOrbit = false;
+
+	// Skills Default Values
+	bool defaultEnableInstantFishing = false;
+	bool defaultPerfectCatch = false;
+	bool defaultDoInstantSellFish = false;
+	bool defaultDestroyCustomizationFishing = false;
+	bool defaultCaptureFishingSpot = false;
+	bool defaultOverrideFishingSpot = false;
+
+	// Housing Default Values
+	bool defaultPlaceAnywhere = false;
 };
