@@ -214,7 +214,7 @@ void EnsureDirectoryExists(const std::string& path) {
 		fs::create_directories(dir);
 	}
 }
-void SaveConfiguration(bool bEnableSilentAimbot, bool bEnableAimbot, bool bTeleportToTargeted, bool bAvoidTeleportingToPlayers, bool bEnableLootbagTeleportation, bool bAddAnimalToOrbit, bool bEnableESP, bool bEnableESPCulling, int CullDistance, bool bDrawFOVCircle, float FOVRadius, bool bEnableInstantFishing, bool bPerfectCatch, bool bDoInstantSellFish, bool bDestroyCustomizationFishing, bool bCaptureFishingSpot, bool bOverrideFishingSpot, float CustomWalkSpeed, float CustomSprintSpeedMultiplier, float CustomClimbingSpeed, float CustomGlidingSpeed, float CustomGlidingFallSpeed, float CustomJumpVelocity, float CustomMaxStepHeight, bool bPlaceAnywhere) {
+void SaveConfiguration(bool bEnableSilentAimbot, bool bEnableAimbot, bool bTeleportToTargeted, bool bAvoidTeleportingToPlayers, bool bEnableLootbagTeleportation, bool bAddAnimalToOrbit, bool bEnableESP, bool bEnableESPCulling, int CullDistance, bool bDrawFOVCircle, float FOVRadius, bool bEnableInstantFishing, bool bPerfectCatch, bool bDoInstantSellFish, bool bDestroyCustomizationFishing, bool bCaptureFishingSpot, float CustomWalkSpeed, float CustomSprintSpeedMultiplier, float CustomClimbingSpeed, float CustomGlidingSpeed, float CustomGlidingFallSpeed, float CustomJumpVelocity, float CustomMaxStepHeight, bool bPlaceAnywhere) {
 	EnsureDirectoryExists(configDirectory);
 
 	std::ofstream configFile(configFilePath);
@@ -236,7 +236,6 @@ void SaveConfiguration(bool bEnableSilentAimbot, bool bEnableAimbot, bool bTelep
 		configFile << "    \"Instant Sell Fish (All Slots)\": " << (bDoInstantSellFish ? "true" : "false") << ",\n";
 		configFile << "    \"Discard Other Unsellables (Slot 1)\": " << (bDestroyCustomizationFishing ? "true" : "false") << ",\n";
 		configFile << "    \"Capture fishing spot\": " << (bCaptureFishingSpot ? "true" : "false") << ",\n";
-		configFile << "    \"Override fishing spot\": " << (bOverrideFishingSpot ? "true" : "false") << ",\n";
 		configFile << "    \"Custom Walk Speed\": " << CustomWalkSpeed << ",\n";
 		configFile << "    \"Custom Sprint Speed Multiplier\": " << CustomSprintSpeedMultiplier << ",\n";
 		configFile << "    \"Custom Climbing Speed\": " << CustomClimbingSpeed << ",\n";
@@ -244,12 +243,12 @@ void SaveConfiguration(bool bEnableSilentAimbot, bool bEnableAimbot, bool bTelep
 		configFile << "    \"Custom Gliding Fall Speed\": " << CustomGlidingFallSpeed << ",\n";
 		configFile << "    \"Custom Jump Velocity\": " << CustomJumpVelocity << ",\n";
 		configFile << "    \"Custom Max Step Height\": " << CustomMaxStepHeight << "\n";
-		configFile << "    \"Override fishing spot\": " << (bPlaceAnywhere ? "true" : "false") << ",\n";
+		configFile << "    \"Enable Place Anywhere\": " << (bPlaceAnywhere ? "true" : "false") << ",\n";
 		configFile << "}";
 		configFile.close();
 	}
 }
-bool LoadConfiguration(bool& bEnableSilentAimbot, bool& bEnableAimbot, bool& bTeleportToTargeted, bool& bAvoidTeleportingToPlayers, bool& bEnableLootbagTeleportation, bool& bAddAnimalToOrbit, bool& bEnableESP, bool& bEnableESPCulling, int& CullDistance, bool& bDrawFOVCircle, float& FOVRadius, bool& bEnableInstantFishing, bool& bPerfectCatch, bool& bDoInstantSellFish, bool& bDestroyCustomizationFishing, bool& bCaptureFishingSpot, bool& bOverrideFishingSpot, float& CustomWalkSpeed, float& CustomSprintSpeedMultiplier, float& CustomClimbingSpeed, float& CustomGlidingSpeed, float& CustomGlidingFallSpeed, float& CustomJumpVelocity, float& CustomMaxStepHeight, bool& bPlaceAnywhere) {
+bool LoadConfiguration(bool& bEnableSilentAimbot, bool& bEnableAimbot, bool& bTeleportToTargeted, bool& bAvoidTeleportingToPlayers, bool& bEnableLootbagTeleportation, bool& bAddAnimalToOrbit, bool& bEnableESP, bool& bEnableESPCulling, int& CullDistance, bool& bDrawFOVCircle, float& FOVRadius, bool& bEnableInstantFishing, bool& bPerfectCatch, bool& bDoInstantSellFish, bool& bDestroyCustomizationFishing, bool& bCaptureFishingSpot, float& CustomWalkSpeed, float& CustomSprintSpeedMultiplier, float& CustomClimbingSpeed, float& CustomGlidingSpeed, float& CustomGlidingFallSpeed, float& CustomJumpVelocity, float& CustomMaxStepHeight, bool& bPlaceAnywhere) {
 	if (!fs::exists(configFilePath)) {
 		return false; // No config file to load
 	}
@@ -276,7 +275,6 @@ bool LoadConfiguration(bool& bEnableSilentAimbot, bool& bEnableAimbot, bool& bTe
 		bDoInstantSellFish = (content.find("\"Instant Sell Fish (All Slots)\": true") != std::string::npos);
 		bDestroyCustomizationFishing = (content.find("\"Discard Other Unsellables (Slot 1)\": true") != std::string::npos);
 		bCaptureFishingSpot = (content.find("\"Capture fishing spot\": true") != std::string::npos);
-		bOverrideFishingSpot = (content.find("\"Override fishing spot\": true") != std::string::npos);
 		bPlaceAnywhere = (content.find("\"Place Items Anywhere\": true") != std::string::npos);
 
 		std::size_t pos = content.find("\"Distance\":");
@@ -665,7 +663,7 @@ static void DrawHUD(const AHUD* HUD) {
 	PaliaOverlay* Overlay = static_cast<PaliaOverlay*>(OverlayBase::Instance);
 
 	// Loading configuration or setting defaults
-	if (!LoadConfiguration(Overlay->bEnableSilentAimbot, Overlay->bEnableAimbot, Overlay->bTeleportToTargeted, Overlay->bAvoidTeleportingToPlayers, Overlay->bEnableLootbagTeleportation, Overlay->bAddAnimalToOrbit, Overlay->bEnableESP, Overlay->bEnableESPCulling, Overlay->CullDistance, Overlay->bDrawFOVCircle, Overlay->FOVRadius, Overlay->bEnableInstantFishing, Overlay->bPerfectCatch, Overlay->bDoInstantSellFish, Overlay->bDestroyCustomizationFishing, Overlay->bCaptureFishingSpot, Overlay->bOverrideFishingSpot, Overlay->CustomWalkSpeed, Overlay->CustomSprintSpeedMultiplier, Overlay->CustomClimbingSpeed, Overlay->CustomGlidingSpeed, Overlay->CustomGlidingFallSpeed, Overlay->CustomJumpVelocity, Overlay->CustomMaxStepHeight, Overlay->defaultPlaceAnywhere)) {
+	if (!LoadConfiguration(Overlay->bEnableSilentAimbot, Overlay->bEnableAimbot, Overlay->bTeleportToTargeted, Overlay->bAvoidTeleportingToPlayers, Overlay->bEnableLootbagTeleportation, Overlay->bAddAnimalToOrbit, Overlay->bEnableESP, Overlay->bEnableESPCulling, Overlay->CullDistance, Overlay->bDrawFOVCircle, Overlay->FOVRadius, Overlay->bEnableInstantFishing, Overlay->bPerfectCatch, Overlay->bDoInstantSellFish, Overlay->bDestroyCustomizationFishing, Overlay->bCaptureFishingSpot, Overlay->CustomWalkSpeed, Overlay->CustomSprintSpeedMultiplier, Overlay->CustomClimbingSpeed, Overlay->CustomGlidingSpeed, Overlay->CustomGlidingFallSpeed, Overlay->CustomJumpVelocity, Overlay->CustomMaxStepHeight, Overlay->defaultPlaceAnywhere)) {
 		Overlay->bEnableESP = Overlay->defaultEnableESP;
 		Overlay->bEnableESPCulling = Overlay->defaultEnableESPCulling;
 		Overlay->CullDistance = Overlay->defaultCullDistance;
@@ -682,7 +680,6 @@ static void DrawHUD(const AHUD* HUD) {
 		Overlay->bDoInstantSellFish = Overlay->defaultDoInstantSellFish;
 		Overlay->bDestroyCustomizationFishing = Overlay->defaultDestroyCustomizationFishing;
 		Overlay->bCaptureFishingSpot = Overlay->defaultCaptureFishingSpot;
-		Overlay->bOverrideFishingSpot = Overlay->defaultOverrideFishingSpot;
 		Overlay->CustomWalkSpeed = Overlay->WalkSpeed;
 		Overlay->CustomSprintSpeedMultiplier = Overlay->SprintSpeedMultiplier;
 		Overlay->CustomClimbingSpeed = Overlay->ClimbingSpeed;
@@ -1799,27 +1796,27 @@ void PaliaOverlay::DrawOverlay()
 			if (ImGui::CollapsingHeader("Visual Settings - General", ImGuiTreeNodeFlags_DefaultOpen))
 			{
 				if (ImGui::Checkbox("Enable ESP", &bEnableESP)) {
-					SaveConfiguration(bEnableSilentAimbot, bEnableAimbot, bTeleportToTargeted, bAvoidTeleportingToPlayers, bEnableLootbagTeleportation, bAddAnimalToOrbit, bEnableESP, bEnableESPCulling, CullDistance, bDrawFOVCircle, FOVRadius, bEnableInstantFishing, bPerfectCatch, bDoInstantSellFish, bDestroyCustomizationFishing, bCaptureFishingSpot, bOverrideFishingSpot, CustomWalkSpeed, CustomSprintSpeedMultiplier, CustomClimbingSpeed, CustomGlidingSpeed, CustomGlidingFallSpeed, CustomJumpVelocity, CustomMaxStepHeight, bPlaceAnywhere);
+					SaveConfiguration(bEnableSilentAimbot, bEnableAimbot, bTeleportToTargeted, bAvoidTeleportingToPlayers, bEnableLootbagTeleportation, bAddAnimalToOrbit, bEnableESP, bEnableESPCulling, CullDistance, bDrawFOVCircle, FOVRadius, bEnableInstantFishing, bPerfectCatch, bDoInstantSellFish, bDestroyCustomizationFishing, bCaptureFishingSpot, CustomWalkSpeed, CustomSprintSpeedMultiplier, CustomClimbingSpeed, CustomGlidingSpeed, CustomGlidingFallSpeed, CustomJumpVelocity, CustomMaxStepHeight, bPlaceAnywhere);
 				}
 
 				if (ImGui::Checkbox("Limit Distance", &bEnableESPCulling)) {
 					if (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenDisabled))
 						ImGui::SetTooltip("Limit the maximum distance the ESP will render. Turn this down to a low value if you're having performance problems.");
-					SaveConfiguration(bEnableSilentAimbot, bEnableAimbot, bTeleportToTargeted, bAvoidTeleportingToPlayers, bEnableLootbagTeleportation, bAddAnimalToOrbit, bEnableESP, bEnableESPCulling, CullDistance, bDrawFOVCircle, FOVRadius, bEnableInstantFishing, bPerfectCatch, bDoInstantSellFish, bDestroyCustomizationFishing, bCaptureFishingSpot, bOverrideFishingSpot, CustomWalkSpeed, CustomSprintSpeedMultiplier, CustomClimbingSpeed, CustomGlidingSpeed, CustomGlidingFallSpeed, CustomJumpVelocity, CustomMaxStepHeight, bPlaceAnywhere);
+					SaveConfiguration(bEnableSilentAimbot, bEnableAimbot, bTeleportToTargeted, bAvoidTeleportingToPlayers, bEnableLootbagTeleportation, bAddAnimalToOrbit, bEnableESP, bEnableESPCulling, CullDistance, bDrawFOVCircle, FOVRadius, bEnableInstantFishing, bPerfectCatch, bDoInstantSellFish, bDestroyCustomizationFishing, bCaptureFishingSpot, CustomWalkSpeed, CustomSprintSpeedMultiplier, CustomClimbingSpeed, CustomGlidingSpeed, CustomGlidingFallSpeed, CustomJumpVelocity, CustomMaxStepHeight, bPlaceAnywhere);
 				}
 
 				if (bEnableESPCulling && ImGui::InputInt("Distance", &CullDistance)) {
-					SaveConfiguration(bEnableSilentAimbot, bEnableAimbot, bTeleportToTargeted, bAvoidTeleportingToPlayers, bEnableLootbagTeleportation, bAddAnimalToOrbit, bEnableESP, bEnableESPCulling, CullDistance, bDrawFOVCircle, FOVRadius, bEnableInstantFishing, bPerfectCatch, bDoInstantSellFish, bDestroyCustomizationFishing, bCaptureFishingSpot, bOverrideFishingSpot, CustomWalkSpeed, CustomSprintSpeedMultiplier, CustomClimbingSpeed, CustomGlidingSpeed, CustomGlidingFallSpeed, CustomJumpVelocity, CustomMaxStepHeight, bPlaceAnywhere);
+					SaveConfiguration(bEnableSilentAimbot, bEnableAimbot, bTeleportToTargeted, bAvoidTeleportingToPlayers, bEnableLootbagTeleportation, bAddAnimalToOrbit, bEnableESP, bEnableESPCulling, CullDistance, bDrawFOVCircle, FOVRadius, bEnableInstantFishing, bPerfectCatch, bDoInstantSellFish, bDestroyCustomizationFishing, bCaptureFishingSpot, CustomWalkSpeed, CustomSprintSpeedMultiplier, CustomClimbingSpeed, CustomGlidingSpeed, CustomGlidingFallSpeed, CustomJumpVelocity, CustomMaxStepHeight, bPlaceAnywhere);
 				}
 
 				if (ImGui::Checkbox("Enable InteliAim Circle", &bDrawFOVCircle)) {
 					if (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenDisabled))
 						ImGui::SetTooltip("Enable the smart FOV targeting system. Teleport to actors, enable aimbots, and more.");
-					SaveConfiguration(bEnableSilentAimbot, bEnableAimbot, bTeleportToTargeted, bAvoidTeleportingToPlayers, bEnableLootbagTeleportation, bAddAnimalToOrbit, bEnableESP, bEnableESPCulling, CullDistance, bDrawFOVCircle, FOVRadius, bEnableInstantFishing, bPerfectCatch, bDoInstantSellFish, bDestroyCustomizationFishing, bCaptureFishingSpot, bOverrideFishingSpot, CustomWalkSpeed, CustomSprintSpeedMultiplier, CustomClimbingSpeed, CustomGlidingSpeed, CustomGlidingFallSpeed, CustomJumpVelocity, CustomMaxStepHeight, bPlaceAnywhere);
+					SaveConfiguration(bEnableSilentAimbot, bEnableAimbot, bTeleportToTargeted, bAvoidTeleportingToPlayers, bEnableLootbagTeleportation, bAddAnimalToOrbit, bEnableESP, bEnableESPCulling, CullDistance, bDrawFOVCircle, FOVRadius, bEnableInstantFishing, bPerfectCatch, bDoInstantSellFish, bDestroyCustomizationFishing, bCaptureFishingSpot, CustomWalkSpeed, CustomSprintSpeedMultiplier, CustomClimbingSpeed, CustomGlidingSpeed, CustomGlidingFallSpeed, CustomJumpVelocity, CustomMaxStepHeight, bPlaceAnywhere);
 				}
 
 				if (bDrawFOVCircle && ImGui::SliderFloat("InteliAim Radius", &FOVRadius, 10.0f, 600.0f, "%1.0f")) {
-					SaveConfiguration(bEnableSilentAimbot, bEnableAimbot, bTeleportToTargeted, bAvoidTeleportingToPlayers, bEnableLootbagTeleportation, bAddAnimalToOrbit, bEnableESP, bEnableESPCulling, CullDistance, bDrawFOVCircle, FOVRadius, bEnableInstantFishing, bPerfectCatch, bDoInstantSellFish, bDestroyCustomizationFishing, bCaptureFishingSpot, bOverrideFishingSpot, CustomWalkSpeed, CustomSprintSpeedMultiplier, CustomClimbingSpeed, CustomGlidingSpeed, CustomGlidingFallSpeed, CustomJumpVelocity, CustomMaxStepHeight, bPlaceAnywhere);
+					SaveConfiguration(bEnableSilentAimbot, bEnableAimbot, bTeleportToTargeted, bAvoidTeleportingToPlayers, bEnableLootbagTeleportation, bAddAnimalToOrbit, bEnableESP, bEnableESPCulling, CullDistance, bDrawFOVCircle, FOVRadius, bEnableInstantFishing, bPerfectCatch, bDoInstantSellFish, bDestroyCustomizationFishing, bCaptureFishingSpot, CustomWalkSpeed, CustomSprintSpeedMultiplier, CustomClimbingSpeed, CustomGlidingSpeed, CustomGlidingFallSpeed, CustomJumpVelocity, CustomMaxStepHeight, bPlaceAnywhere);
 				}
 			}
 
@@ -3081,10 +3078,10 @@ void PaliaOverlay::DrawOverlay()
 				}
 				if (ImGui::Checkbox("Teleport to Targeted", &bTeleportToTargeted)) {
 					if (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenDisabled)) ImGui::SetTooltip("Teleport to the targeted entity by using your top side mouse button.");
-					SaveConfiguration(bEnableSilentAimbot, bEnableAimbot, bTeleportToTargeted, bAvoidTeleportingToPlayers, bEnableLootbagTeleportation, bAddAnimalToOrbit, bEnableESP, bEnableESPCulling, CullDistance, bDrawFOVCircle, FOVRadius, bEnableInstantFishing, bPerfectCatch, bDoInstantSellFish, bDestroyCustomizationFishing, bCaptureFishingSpot, bOverrideFishingSpot, CustomWalkSpeed, CustomSprintSpeedMultiplier, CustomClimbingSpeed, CustomGlidingSpeed, CustomGlidingFallSpeed, CustomJumpVelocity, CustomMaxStepHeight, bPlaceAnywhere);
+					SaveConfiguration(bEnableSilentAimbot, bEnableAimbot, bTeleportToTargeted, bAvoidTeleportingToPlayers, bEnableLootbagTeleportation, bAddAnimalToOrbit, bEnableESP, bEnableESPCulling, CullDistance, bDrawFOVCircle, FOVRadius, bEnableInstantFishing, bPerfectCatch, bDoInstantSellFish, bDestroyCustomizationFishing, bCaptureFishingSpot, CustomWalkSpeed, CustomSprintSpeedMultiplier, CustomClimbingSpeed, CustomGlidingSpeed, CustomGlidingFallSpeed, CustomJumpVelocity, CustomMaxStepHeight, bPlaceAnywhere);
 				}
 				if (ImGui::Checkbox("Avoid Teleporting To Targeted Players", &bAvoidTeleportingToPlayers)) {
-					SaveConfiguration(bEnableSilentAimbot, bEnableAimbot, bTeleportToTargeted, bAvoidTeleportingToPlayers, bEnableLootbagTeleportation, bAddAnimalToOrbit, bEnableESP, bEnableESPCulling, CullDistance, bDrawFOVCircle, FOVRadius, bEnableInstantFishing, bPerfectCatch, bDoInstantSellFish, bDestroyCustomizationFishing, bCaptureFishingSpot, bOverrideFishingSpot, CustomWalkSpeed, CustomSprintSpeedMultiplier, CustomClimbingSpeed, CustomGlidingSpeed, CustomGlidingFallSpeed, CustomJumpVelocity, CustomMaxStepHeight, bPlaceAnywhere);
+					SaveConfiguration(bEnableSilentAimbot, bEnableAimbot, bTeleportToTargeted, bAvoidTeleportingToPlayers, bEnableLootbagTeleportation, bAddAnimalToOrbit, bEnableESP, bEnableESPCulling, CullDistance, bDrawFOVCircle, FOVRadius, bEnableInstantFishing, bPerfectCatch, bDoInstantSellFish, bDestroyCustomizationFishing, bCaptureFishingSpot, CustomWalkSpeed, CustomSprintSpeedMultiplier, CustomClimbingSpeed, CustomGlidingSpeed, CustomGlidingFallSpeed, CustomJumpVelocity, CustomMaxStepHeight, bPlaceAnywhere);
 				}
 			}
 
@@ -3094,12 +3091,12 @@ void PaliaOverlay::DrawOverlay()
 			{
 				if (ImGui::Checkbox("Teleport Dropped Loot to Player", &bEnableLootbagTeleportation)) {
 					if (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenDisabled)) ImGui::SetTooltip("Automatically teleport dropped loot to your current location.");
-					SaveConfiguration(bEnableSilentAimbot, bEnableAimbot, bTeleportToTargeted, bAvoidTeleportingToPlayers, bEnableLootbagTeleportation, bAddAnimalToOrbit, bEnableESP, bEnableESPCulling, CullDistance, bDrawFOVCircle, FOVRadius, bEnableInstantFishing, bPerfectCatch, bDoInstantSellFish, bDestroyCustomizationFishing, bCaptureFishingSpot, bOverrideFishingSpot, CustomWalkSpeed, CustomSprintSpeedMultiplier, CustomClimbingSpeed, CustomGlidingSpeed, CustomGlidingFallSpeed, CustomJumpVelocity, CustomMaxStepHeight, bPlaceAnywhere);
+					SaveConfiguration(bEnableSilentAimbot, bEnableAimbot, bTeleportToTargeted, bAvoidTeleportingToPlayers, bEnableLootbagTeleportation, bAddAnimalToOrbit, bEnableESP, bEnableESPCulling, CullDistance, bDrawFOVCircle, FOVRadius, bEnableInstantFishing, bPerfectCatch, bDoInstantSellFish, bDestroyCustomizationFishing, bCaptureFishingSpot, CustomWalkSpeed, CustomSprintSpeedMultiplier, CustomClimbingSpeed, CustomGlidingSpeed, CustomGlidingFallSpeed, CustomJumpVelocity, CustomMaxStepHeight, bPlaceAnywhere);
 				}
 
 				if (ImGui::Checkbox("Target Animals to Orbit", &bAddAnimalToOrbit)) {
 					if (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenDisabled)) ImGui::SetTooltip("Teleport the targeted animals into orbit around you!");
-					SaveConfiguration(bEnableSilentAimbot, bEnableAimbot, bTeleportToTargeted, bAvoidTeleportingToPlayers, bEnableLootbagTeleportation, bAddAnimalToOrbit, bEnableESP, bEnableESPCulling, CullDistance, bDrawFOVCircle, FOVRadius, bEnableInstantFishing, bPerfectCatch, bDoInstantSellFish, bDestroyCustomizationFishing, bCaptureFishingSpot, bOverrideFishingSpot, CustomWalkSpeed, CustomSprintSpeedMultiplier, CustomClimbingSpeed, CustomGlidingSpeed, CustomGlidingFallSpeed, CustomJumpVelocity, CustomMaxStepHeight, bPlaceAnywhere);
+					SaveConfiguration(bEnableSilentAimbot, bEnableAimbot, bTeleportToTargeted, bAvoidTeleportingToPlayers, bEnableLootbagTeleportation, bAddAnimalToOrbit, bEnableESP, bEnableESPCulling, CullDistance, bDrawFOVCircle, FOVRadius, bEnableInstantFishing, bPerfectCatch, bDoInstantSellFish, bDestroyCustomizationFishing, bCaptureFishingSpot, CustomWalkSpeed, CustomSprintSpeedMultiplier, CustomClimbingSpeed, CustomGlidingSpeed, CustomGlidingFallSpeed, CustomJumpVelocity, CustomMaxStepHeight, bPlaceAnywhere);
 				}
 			}
 		}
@@ -3202,97 +3199,97 @@ void PaliaOverlay::DrawOverlay()
 									ImGui::Text("Walk Speed: ");
 									if (ImGui::InputScalar("##WalkSpeed", ImGuiDataType_Float, &CustomWalkSpeed, &f5)) {
 										MovementComponent->MaxWalkSpeed = CustomWalkSpeed;
-										SaveConfiguration(bEnableSilentAimbot, bEnableAimbot, bTeleportToTargeted, bAvoidTeleportingToPlayers, bEnableLootbagTeleportation, bAddAnimalToOrbit, bEnableESP, bEnableESPCulling, CullDistance, bDrawFOVCircle, FOVRadius, bEnableInstantFishing, bPerfectCatch, bDoInstantSellFish, bDestroyCustomizationFishing, bCaptureFishingSpot, bOverrideFishingSpot, CustomWalkSpeed, CustomSprintSpeedMultiplier, CustomClimbingSpeed, CustomGlidingSpeed, CustomGlidingFallSpeed, CustomJumpVelocity, CustomMaxStepHeight, bPlaceAnywhere);
+										SaveConfiguration(bEnableSilentAimbot, bEnableAimbot, bTeleportToTargeted, bAvoidTeleportingToPlayers, bEnableLootbagTeleportation, bAddAnimalToOrbit, bEnableESP, bEnableESPCulling, CullDistance, bDrawFOVCircle, FOVRadius, bEnableInstantFishing, bPerfectCatch, bDoInstantSellFish, bDestroyCustomizationFishing, bCaptureFishingSpot, CustomWalkSpeed, CustomSprintSpeedMultiplier, CustomClimbingSpeed, CustomGlidingSpeed, CustomGlidingFallSpeed, CustomJumpVelocity, CustomMaxStepHeight, bPlaceAnywhere);
 									}
 									ImGui::SameLine();
 									if (ImGui::Button("R##WalkSpeed")) {
 										CustomWalkSpeed = WalkSpeed;
 										MovementComponent->MaxWalkSpeed = WalkSpeed;
-										SaveConfiguration(bEnableSilentAimbot, bEnableAimbot, bTeleportToTargeted, bAvoidTeleportingToPlayers, bEnableLootbagTeleportation, bAddAnimalToOrbit, bEnableESP, bEnableESPCulling, CullDistance, bDrawFOVCircle, FOVRadius, bEnableInstantFishing, bPerfectCatch, bDoInstantSellFish, bDestroyCustomizationFishing, bCaptureFishingSpot, bOverrideFishingSpot, CustomWalkSpeed, CustomSprintSpeedMultiplier, CustomClimbingSpeed, CustomGlidingSpeed, CustomGlidingFallSpeed, CustomJumpVelocity, CustomMaxStepHeight, bPlaceAnywhere);
+										SaveConfiguration(bEnableSilentAimbot, bEnableAimbot, bTeleportToTargeted, bAvoidTeleportingToPlayers, bEnableLootbagTeleportation, bAddAnimalToOrbit, bEnableESP, bEnableESPCulling, CullDistance, bDrawFOVCircle, FOVRadius, bEnableInstantFishing, bPerfectCatch, bDoInstantSellFish, bDestroyCustomizationFishing, bCaptureFishingSpot, CustomWalkSpeed, CustomSprintSpeedMultiplier, CustomClimbingSpeed, CustomGlidingSpeed, CustomGlidingFallSpeed, CustomJumpVelocity, CustomMaxStepHeight, bPlaceAnywhere);
 									}
 
 									// Sprint Speed
 									ImGui::Text("Sprint Speed: ");
 									if (ImGui::InputScalar("##SprintSpeedMultiplier", ImGuiDataType_Float, &CustomSprintSpeedMultiplier, &f5)) {
 										MovementComponent->SprintSpeedMultiplier = CustomSprintSpeedMultiplier;
-										SaveConfiguration(bEnableSilentAimbot, bEnableAimbot, bTeleportToTargeted, bAvoidTeleportingToPlayers, bEnableLootbagTeleportation, bAddAnimalToOrbit, bEnableESP, bEnableESPCulling, CullDistance, bDrawFOVCircle, FOVRadius, bEnableInstantFishing, bPerfectCatch, bDoInstantSellFish, bDestroyCustomizationFishing, bCaptureFishingSpot, bOverrideFishingSpot, CustomWalkSpeed, CustomSprintSpeedMultiplier, CustomClimbingSpeed, CustomGlidingSpeed, CustomGlidingFallSpeed, CustomJumpVelocity, CustomMaxStepHeight, bPlaceAnywhere);
+										SaveConfiguration(bEnableSilentAimbot, bEnableAimbot, bTeleportToTargeted, bAvoidTeleportingToPlayers, bEnableLootbagTeleportation, bAddAnimalToOrbit, bEnableESP, bEnableESPCulling, CullDistance, bDrawFOVCircle, FOVRadius, bEnableInstantFishing, bPerfectCatch, bDoInstantSellFish, bDestroyCustomizationFishing, bCaptureFishingSpot, CustomWalkSpeed, CustomSprintSpeedMultiplier, CustomClimbingSpeed, CustomGlidingSpeed, CustomGlidingFallSpeed, CustomJumpVelocity, CustomMaxStepHeight, bPlaceAnywhere);
 									}
 
 									ImGui::SameLine();
 									if (ImGui::Button("R##SprintSpeedMultiplier")) {
 										CustomSprintSpeedMultiplier = SprintSpeedMultiplier;
 										MovementComponent->SprintSpeedMultiplier = SprintSpeedMultiplier;
-										SaveConfiguration(bEnableSilentAimbot, bEnableAimbot, bTeleportToTargeted, bAvoidTeleportingToPlayers, bEnableLootbagTeleportation, bAddAnimalToOrbit, bEnableESP, bEnableESPCulling, CullDistance, bDrawFOVCircle, FOVRadius, bEnableInstantFishing, bPerfectCatch, bDoInstantSellFish, bDestroyCustomizationFishing, bCaptureFishingSpot, bOverrideFishingSpot, CustomWalkSpeed, CustomSprintSpeedMultiplier, CustomClimbingSpeed, CustomGlidingSpeed, CustomGlidingFallSpeed, CustomJumpVelocity, CustomMaxStepHeight, bPlaceAnywhere);
+										SaveConfiguration(bEnableSilentAimbot, bEnableAimbot, bTeleportToTargeted, bAvoidTeleportingToPlayers, bEnableLootbagTeleportation, bAddAnimalToOrbit, bEnableESP, bEnableESPCulling, CullDistance, bDrawFOVCircle, FOVRadius, bEnableInstantFishing, bPerfectCatch, bDoInstantSellFish, bDestroyCustomizationFishing, bCaptureFishingSpot, CustomWalkSpeed, CustomSprintSpeedMultiplier, CustomClimbingSpeed, CustomGlidingSpeed, CustomGlidingFallSpeed, CustomJumpVelocity, CustomMaxStepHeight, bPlaceAnywhere);
 									}
 
 									// Climbing Speed
 									ImGui::Text("Climbing Speed: ");
 									if (ImGui::InputScalar("##ClimbingSpeed", ImGuiDataType_Float, &CustomClimbingSpeed, &f5)) {
 										MovementComponent->ClimbingSpeed = CustomClimbingSpeed;
-										SaveConfiguration(bEnableSilentAimbot, bEnableAimbot, bTeleportToTargeted, bAvoidTeleportingToPlayers, bEnableLootbagTeleportation, bAddAnimalToOrbit, bEnableESP, bEnableESPCulling, CullDistance, bDrawFOVCircle, FOVRadius, bEnableInstantFishing, bPerfectCatch, bDoInstantSellFish, bDestroyCustomizationFishing, bCaptureFishingSpot, bOverrideFishingSpot, CustomWalkSpeed, CustomSprintSpeedMultiplier, CustomClimbingSpeed, CustomGlidingSpeed, CustomGlidingFallSpeed, CustomJumpVelocity, CustomMaxStepHeight, bPlaceAnywhere);
+										SaveConfiguration(bEnableSilentAimbot, bEnableAimbot, bTeleportToTargeted, bAvoidTeleportingToPlayers, bEnableLootbagTeleportation, bAddAnimalToOrbit, bEnableESP, bEnableESPCulling, CullDistance, bDrawFOVCircle, FOVRadius, bEnableInstantFishing, bPerfectCatch, bDoInstantSellFish, bDestroyCustomizationFishing, bCaptureFishingSpot, CustomWalkSpeed, CustomSprintSpeedMultiplier, CustomClimbingSpeed, CustomGlidingSpeed, CustomGlidingFallSpeed, CustomJumpVelocity, CustomMaxStepHeight, bPlaceAnywhere);
 									}
 
 									ImGui::SameLine();
 									if (ImGui::Button("R##ClimbingSpeed")) {
 										CustomClimbingSpeed = ClimbingSpeed;
 										MovementComponent->ClimbingSpeed = ClimbingSpeed;
-										SaveConfiguration(bEnableSilentAimbot, bEnableAimbot, bTeleportToTargeted, bAvoidTeleportingToPlayers, bEnableLootbagTeleportation, bAddAnimalToOrbit, bEnableESP, bEnableESPCulling, CullDistance, bDrawFOVCircle, FOVRadius, bEnableInstantFishing, bPerfectCatch, bDoInstantSellFish, bDestroyCustomizationFishing, bCaptureFishingSpot, bOverrideFishingSpot, CustomWalkSpeed, CustomSprintSpeedMultiplier, CustomClimbingSpeed, CustomGlidingSpeed, CustomGlidingFallSpeed, CustomJumpVelocity, CustomMaxStepHeight, bPlaceAnywhere);
+										SaveConfiguration(bEnableSilentAimbot, bEnableAimbot, bTeleportToTargeted, bAvoidTeleportingToPlayers, bEnableLootbagTeleportation, bAddAnimalToOrbit, bEnableESP, bEnableESPCulling, CullDistance, bDrawFOVCircle, FOVRadius, bEnableInstantFishing, bPerfectCatch, bDoInstantSellFish, bDestroyCustomizationFishing, bCaptureFishingSpot, CustomWalkSpeed, CustomSprintSpeedMultiplier, CustomClimbingSpeed, CustomGlidingSpeed, CustomGlidingFallSpeed, CustomJumpVelocity, CustomMaxStepHeight, bPlaceAnywhere);
 									}
 
 									// Gliding Speed
 									ImGui::Text("Gliding Speed: ");
 									if (ImGui::InputScalar("##GlidingSpeed", ImGuiDataType_Float, &CustomGlidingSpeed, &f5)) {
 										MovementComponent->GlidingMaxSpeed = CustomGlidingSpeed;
-										SaveConfiguration(bEnableSilentAimbot, bEnableAimbot, bTeleportToTargeted, bAvoidTeleportingToPlayers, bEnableLootbagTeleportation, bAddAnimalToOrbit, bEnableESP, bEnableESPCulling, CullDistance, bDrawFOVCircle, FOVRadius, bEnableInstantFishing, bPerfectCatch, bDoInstantSellFish, bDestroyCustomizationFishing, bCaptureFishingSpot, bOverrideFishingSpot, CustomWalkSpeed, CustomSprintSpeedMultiplier, CustomClimbingSpeed, CustomGlidingSpeed, CustomGlidingFallSpeed, CustomJumpVelocity, CustomMaxStepHeight, bPlaceAnywhere);
+										SaveConfiguration(bEnableSilentAimbot, bEnableAimbot, bTeleportToTargeted, bAvoidTeleportingToPlayers, bEnableLootbagTeleportation, bAddAnimalToOrbit, bEnableESP, bEnableESPCulling, CullDistance, bDrawFOVCircle, FOVRadius, bEnableInstantFishing, bPerfectCatch, bDoInstantSellFish, bDestroyCustomizationFishing, bCaptureFishingSpot, CustomWalkSpeed, CustomSprintSpeedMultiplier, CustomClimbingSpeed, CustomGlidingSpeed, CustomGlidingFallSpeed, CustomJumpVelocity, CustomMaxStepHeight, bPlaceAnywhere);
 									}
 
 									ImGui::SameLine();
 									if (ImGui::Button("R##GlidingSpeed")) {
 										CustomGlidingSpeed = GlidingSpeed;
 										MovementComponent->GlidingMaxSpeed = GlidingSpeed;
-										SaveConfiguration(bEnableSilentAimbot, bEnableAimbot, bTeleportToTargeted, bAvoidTeleportingToPlayers, bEnableLootbagTeleportation, bAddAnimalToOrbit, bEnableESP, bEnableESPCulling, CullDistance, bDrawFOVCircle, FOVRadius, bEnableInstantFishing, bPerfectCatch, bDoInstantSellFish, bDestroyCustomizationFishing, bCaptureFishingSpot, bOverrideFishingSpot, CustomWalkSpeed, CustomSprintSpeedMultiplier, CustomClimbingSpeed, CustomGlidingSpeed, CustomGlidingFallSpeed, CustomJumpVelocity, CustomMaxStepHeight, bPlaceAnywhere);
+										SaveConfiguration(bEnableSilentAimbot, bEnableAimbot, bTeleportToTargeted, bAvoidTeleportingToPlayers, bEnableLootbagTeleportation, bAddAnimalToOrbit, bEnableESP, bEnableESPCulling, CullDistance, bDrawFOVCircle, FOVRadius, bEnableInstantFishing, bPerfectCatch, bDoInstantSellFish, bDestroyCustomizationFishing, bCaptureFishingSpot, CustomWalkSpeed, CustomSprintSpeedMultiplier, CustomClimbingSpeed, CustomGlidingSpeed, CustomGlidingFallSpeed, CustomJumpVelocity, CustomMaxStepHeight, bPlaceAnywhere);
 									}
 
 									// Gliding Fall Speed
 									ImGui::Text("Gliding Fall Speed: ");
 									if (ImGui::InputScalar("##GlidingFallSpeed", ImGuiDataType_Float, &CustomGlidingFallSpeed, &f5)) {
 										MovementComponent->GlidingFallSpeed = CustomGlidingFallSpeed;
-										SaveConfiguration(bEnableSilentAimbot, bEnableAimbot, bTeleportToTargeted, bAvoidTeleportingToPlayers, bEnableLootbagTeleportation, bAddAnimalToOrbit, bEnableESP, bEnableESPCulling, CullDistance, bDrawFOVCircle, FOVRadius, bEnableInstantFishing, bPerfectCatch, bDoInstantSellFish, bDestroyCustomizationFishing, bCaptureFishingSpot, bOverrideFishingSpot, CustomWalkSpeed, CustomSprintSpeedMultiplier, CustomClimbingSpeed, CustomGlidingSpeed, CustomGlidingFallSpeed, CustomJumpVelocity, CustomMaxStepHeight, bPlaceAnywhere);
+										SaveConfiguration(bEnableSilentAimbot, bEnableAimbot, bTeleportToTargeted, bAvoidTeleportingToPlayers, bEnableLootbagTeleportation, bAddAnimalToOrbit, bEnableESP, bEnableESPCulling, CullDistance, bDrawFOVCircle, FOVRadius, bEnableInstantFishing, bPerfectCatch, bDoInstantSellFish, bDestroyCustomizationFishing, bCaptureFishingSpot, CustomWalkSpeed, CustomSprintSpeedMultiplier, CustomClimbingSpeed, CustomGlidingSpeed, CustomGlidingFallSpeed, CustomJumpVelocity, CustomMaxStepHeight, bPlaceAnywhere);
 									}
 
 									ImGui::SameLine();
 									if (ImGui::Button("R##GlidingFallSpeed")) {
 										CustomGlidingFallSpeed = GlidingFallSpeed;
 										MovementComponent->GlidingFallSpeed = GlidingFallSpeed;
-										SaveConfiguration(bEnableSilentAimbot, bEnableAimbot, bTeleportToTargeted, bAvoidTeleportingToPlayers, bEnableLootbagTeleportation, bAddAnimalToOrbit, bEnableESP, bEnableESPCulling, CullDistance, bDrawFOVCircle, FOVRadius, bEnableInstantFishing, bPerfectCatch, bDoInstantSellFish, bDestroyCustomizationFishing, bCaptureFishingSpot, bOverrideFishingSpot, CustomWalkSpeed, CustomSprintSpeedMultiplier, CustomClimbingSpeed, CustomGlidingSpeed, CustomGlidingFallSpeed, CustomJumpVelocity, CustomMaxStepHeight, bPlaceAnywhere);
+										SaveConfiguration(bEnableSilentAimbot, bEnableAimbot, bTeleportToTargeted, bAvoidTeleportingToPlayers, bEnableLootbagTeleportation, bAddAnimalToOrbit, bEnableESP, bEnableESPCulling, CullDistance, bDrawFOVCircle, FOVRadius, bEnableInstantFishing, bPerfectCatch, bDoInstantSellFish, bDestroyCustomizationFishing, bCaptureFishingSpot, CustomWalkSpeed, CustomSprintSpeedMultiplier, CustomClimbingSpeed, CustomGlidingSpeed, CustomGlidingFallSpeed, CustomJumpVelocity, CustomMaxStepHeight, bPlaceAnywhere);
 									}
 
 									// Jump Velocity
 									ImGui::Text("Jump Velocity: ");
 									if (ImGui::InputScalar("##JumpVelocity", ImGuiDataType_Float, &CustomJumpVelocity, &f5)) {
 										MovementComponent->JumpZVelocity = CustomJumpVelocity;
-										SaveConfiguration(bEnableSilentAimbot, bEnableAimbot, bTeleportToTargeted, bAvoidTeleportingToPlayers, bEnableLootbagTeleportation, bAddAnimalToOrbit, bEnableESP, bEnableESPCulling, CullDistance, bDrawFOVCircle, FOVRadius, bEnableInstantFishing, bPerfectCatch, bDoInstantSellFish, bDestroyCustomizationFishing, bCaptureFishingSpot, bOverrideFishingSpot, CustomWalkSpeed, CustomSprintSpeedMultiplier, CustomClimbingSpeed, CustomGlidingSpeed, CustomGlidingFallSpeed, CustomJumpVelocity, CustomMaxStepHeight, bPlaceAnywhere);
+										SaveConfiguration(bEnableSilentAimbot, bEnableAimbot, bTeleportToTargeted, bAvoidTeleportingToPlayers, bEnableLootbagTeleportation, bAddAnimalToOrbit, bEnableESP, bEnableESPCulling, CullDistance, bDrawFOVCircle, FOVRadius, bEnableInstantFishing, bPerfectCatch, bDoInstantSellFish, bDestroyCustomizationFishing, bCaptureFishingSpot, CustomWalkSpeed, CustomSprintSpeedMultiplier, CustomClimbingSpeed, CustomGlidingSpeed, CustomGlidingFallSpeed, CustomJumpVelocity, CustomMaxStepHeight, bPlaceAnywhere);
 									}
 
 									ImGui::SameLine();
 									if (ImGui::Button("R##JumpVelocity")) {
 										CustomJumpVelocity = JumpVelocity;
 										MovementComponent->JumpZVelocity = JumpVelocity;
-										SaveConfiguration(bEnableSilentAimbot, bEnableAimbot, bTeleportToTargeted, bAvoidTeleportingToPlayers, bEnableLootbagTeleportation, bAddAnimalToOrbit, bEnableESP, bEnableESPCulling, CullDistance, bDrawFOVCircle, FOVRadius, bEnableInstantFishing, bPerfectCatch, bDoInstantSellFish, bDestroyCustomizationFishing, bCaptureFishingSpot, bOverrideFishingSpot, CustomWalkSpeed, CustomSprintSpeedMultiplier, CustomClimbingSpeed, CustomGlidingSpeed, CustomGlidingFallSpeed, CustomJumpVelocity, CustomMaxStepHeight, bPlaceAnywhere);
+										SaveConfiguration(bEnableSilentAimbot, bEnableAimbot, bTeleportToTargeted, bAvoidTeleportingToPlayers, bEnableLootbagTeleportation, bAddAnimalToOrbit, bEnableESP, bEnableESPCulling, CullDistance, bDrawFOVCircle, FOVRadius, bEnableInstantFishing, bPerfectCatch, bDoInstantSellFish, bDestroyCustomizationFishing, bCaptureFishingSpot, CustomWalkSpeed, CustomSprintSpeedMultiplier, CustomClimbingSpeed, CustomGlidingSpeed, CustomGlidingFallSpeed, CustomJumpVelocity, CustomMaxStepHeight, bPlaceAnywhere);
 									}
 
 									// Step Height
 									ImGui::Text("Step Height: ");
 									if (ImGui::InputScalar("##MaxStepHeight", ImGuiDataType_Float, &CustomMaxStepHeight, &f5)) {
 										MovementComponent->MaxStepHeight = CustomMaxStepHeight;
-										SaveConfiguration(bEnableSilentAimbot, bEnableAimbot, bTeleportToTargeted, bAvoidTeleportingToPlayers, bEnableLootbagTeleportation, bAddAnimalToOrbit, bEnableESP, bEnableESPCulling, CullDistance, bDrawFOVCircle, FOVRadius, bEnableInstantFishing, bPerfectCatch, bDoInstantSellFish, bDestroyCustomizationFishing, bCaptureFishingSpot, bOverrideFishingSpot, CustomWalkSpeed, CustomSprintSpeedMultiplier, CustomClimbingSpeed, CustomGlidingSpeed, CustomGlidingFallSpeed, CustomJumpVelocity, CustomMaxStepHeight, bPlaceAnywhere);
+										SaveConfiguration(bEnableSilentAimbot, bEnableAimbot, bTeleportToTargeted, bAvoidTeleportingToPlayers, bEnableLootbagTeleportation, bAddAnimalToOrbit, bEnableESP, bEnableESPCulling, CullDistance, bDrawFOVCircle, FOVRadius, bEnableInstantFishing, bPerfectCatch, bDoInstantSellFish, bDestroyCustomizationFishing, bCaptureFishingSpot, CustomWalkSpeed, CustomSprintSpeedMultiplier, CustomClimbingSpeed, CustomGlidingSpeed, CustomGlidingFallSpeed, CustomJumpVelocity, CustomMaxStepHeight, bPlaceAnywhere);
 									}
 
 									ImGui::SameLine();
 									if (ImGui::Button("R##MaxStepHeight")) {
 										CustomMaxStepHeight = MaxStepHeight;
 										MovementComponent->MaxStepHeight = MaxStepHeight;
-										SaveConfiguration(bEnableSilentAimbot, bEnableAimbot, bTeleportToTargeted, bAvoidTeleportingToPlayers, bEnableLootbagTeleportation, bAddAnimalToOrbit, bEnableESP, bEnableESPCulling, CullDistance, bDrawFOVCircle, FOVRadius, bEnableInstantFishing, bPerfectCatch, bDoInstantSellFish, bDestroyCustomizationFishing, bCaptureFishingSpot, bOverrideFishingSpot, CustomWalkSpeed, CustomSprintSpeedMultiplier, CustomClimbingSpeed, CustomGlidingSpeed, CustomGlidingFallSpeed, CustomJumpVelocity, CustomMaxStepHeight, bPlaceAnywhere);
+										SaveConfiguration(bEnableSilentAimbot, bEnableAimbot, bTeleportToTargeted, bAvoidTeleportingToPlayers, bEnableLootbagTeleportation, bAddAnimalToOrbit, bEnableESP, bEnableESPCulling, CullDistance, bDrawFOVCircle, FOVRadius, bEnableInstantFishing, bPerfectCatch, bDoInstantSellFish, bDestroyCustomizationFishing, bCaptureFishingSpot, CustomWalkSpeed, CustomSprintSpeedMultiplier, CustomClimbingSpeed, CustomGlidingSpeed, CustomGlidingFallSpeed, CustomJumpVelocity, CustomMaxStepHeight, bPlaceAnywhere);
 									}
 								}
 
@@ -3629,31 +3626,29 @@ void PaliaOverlay::DrawOverlay()
 								if (ImGui::CollapsingHeader("Fishing Settings - General", ImGuiTreeNodeFlags_DefaultOpen))
 								{
 									if (ImGui::Checkbox("Enable Instant Fishing", &bEnableInstantFishing)) {
-										SaveConfiguration(bEnableSilentAimbot, bEnableAimbot, bTeleportToTargeted, bAvoidTeleportingToPlayers, bEnableLootbagTeleportation, bAddAnimalToOrbit, bEnableESP, bEnableESPCulling, CullDistance, bDrawFOVCircle, FOVRadius, bEnableInstantFishing, bPerfectCatch, bDoInstantSellFish, bDestroyCustomizationFishing, bCaptureFishingSpot, bOverrideFishingSpot, CustomWalkSpeed, CustomSprintSpeedMultiplier, CustomClimbingSpeed, CustomGlidingSpeed, CustomGlidingFallSpeed, CustomJumpVelocity, CustomMaxStepHeight, bPlaceAnywhere);
+										SaveConfiguration(bEnableSilentAimbot, bEnableAimbot, bTeleportToTargeted, bAvoidTeleportingToPlayers, bEnableLootbagTeleportation, bAddAnimalToOrbit, bEnableESP, bEnableESPCulling, CullDistance, bDrawFOVCircle, FOVRadius, bEnableInstantFishing, bPerfectCatch, bDoInstantSellFish, bDestroyCustomizationFishing, bCaptureFishingSpot, CustomWalkSpeed, CustomSprintSpeedMultiplier, CustomClimbingSpeed, CustomGlidingSpeed, CustomGlidingFallSpeed, CustomJumpVelocity, CustomMaxStepHeight, bPlaceAnywhere);
 									}
 									if (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenDisabled)) ImGui::SetTooltip("Automatically catch fish when your bobber hits the water.");
 
 									if (ImGui::Checkbox("Always Perfect Catch", &bPerfectCatch)) {
-										SaveConfiguration(bEnableSilentAimbot, bEnableAimbot, bTeleportToTargeted, bAvoidTeleportingToPlayers, bEnableLootbagTeleportation, bAddAnimalToOrbit, bEnableESP, bEnableESPCulling, CullDistance, bDrawFOVCircle, FOVRadius, bEnableInstantFishing, bPerfectCatch, bDoInstantSellFish, bDestroyCustomizationFishing, bCaptureFishingSpot, bOverrideFishingSpot, CustomWalkSpeed, CustomSprintSpeedMultiplier, CustomClimbingSpeed, CustomGlidingSpeed, CustomGlidingFallSpeed, CustomJumpVelocity, CustomMaxStepHeight, bPlaceAnywhere);
+										SaveConfiguration(bEnableSilentAimbot, bEnableAimbot, bTeleportToTargeted, bAvoidTeleportingToPlayers, bEnableLootbagTeleportation, bAddAnimalToOrbit, bEnableESP, bEnableESPCulling, CullDistance, bDrawFOVCircle, FOVRadius, bEnableInstantFishing, bPerfectCatch, bDoInstantSellFish, bDestroyCustomizationFishing, bCaptureFishingSpot, CustomWalkSpeed, CustomSprintSpeedMultiplier, CustomClimbingSpeed, CustomGlidingSpeed, CustomGlidingFallSpeed, CustomJumpVelocity, CustomMaxStepHeight, bPlaceAnywhere);
 									}
 									if (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenDisabled)) ImGui::SetTooltip("Choose whether to catch all fish perfectly or not.");
 
 									if (ImGui::Checkbox("Instant Sell Fish (All Slots)", &bDoInstantSellFish)) {
-										SaveConfiguration(bEnableSilentAimbot, bEnableAimbot, bTeleportToTargeted, bAvoidTeleportingToPlayers, bEnableLootbagTeleportation, bAddAnimalToOrbit, bEnableESP, bEnableESPCulling, CullDistance, bDrawFOVCircle, FOVRadius, bEnableInstantFishing, bPerfectCatch, bDoInstantSellFish, bDestroyCustomizationFishing, bCaptureFishingSpot, bOverrideFishingSpot, CustomWalkSpeed, CustomSprintSpeedMultiplier, CustomClimbingSpeed, CustomGlidingSpeed, CustomGlidingFallSpeed, CustomJumpVelocity, CustomMaxStepHeight, bPlaceAnywhere);
+										SaveConfiguration(bEnableSilentAimbot, bEnableAimbot, bTeleportToTargeted, bAvoidTeleportingToPlayers, bEnableLootbagTeleportation, bAddAnimalToOrbit, bEnableESP, bEnableESPCulling, CullDistance, bDrawFOVCircle, FOVRadius, bEnableInstantFishing, bPerfectCatch, bDoInstantSellFish, bDestroyCustomizationFishing, bCaptureFishingSpot, CustomWalkSpeed, CustomSprintSpeedMultiplier, CustomClimbingSpeed, CustomGlidingSpeed, CustomGlidingFallSpeed, CustomJumpVelocity, CustomMaxStepHeight, bPlaceAnywhere);
 									}
 									if (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenDisabled)) ImGui::SetTooltip("Visit a storefront first, then enable this fishing feature.");
 
 									if (ImGui::Checkbox("Discard Other Unsellables (Slot 1)", &bDestroyCustomizationFishing)) {
-										SaveConfiguration(bEnableSilentAimbot, bEnableAimbot, bTeleportToTargeted, bAvoidTeleportingToPlayers, bEnableLootbagTeleportation, bAddAnimalToOrbit, bEnableESP, bEnableESPCulling, CullDistance, bDrawFOVCircle, FOVRadius, bEnableInstantFishing, bPerfectCatch, bDoInstantSellFish, bDestroyCustomizationFishing, bCaptureFishingSpot, bOverrideFishingSpot, CustomWalkSpeed, CustomSprintSpeedMultiplier, CustomClimbingSpeed, CustomGlidingSpeed, CustomGlidingFallSpeed, CustomJumpVelocity, CustomMaxStepHeight, bPlaceAnywhere);
+										SaveConfiguration(bEnableSilentAimbot, bEnableAimbot, bTeleportToTargeted, bAvoidTeleportingToPlayers, bEnableLootbagTeleportation, bAddAnimalToOrbit, bEnableESP, bEnableESPCulling, CullDistance, bDrawFOVCircle, FOVRadius, bEnableInstantFishing, bPerfectCatch, bDoInstantSellFish, bDestroyCustomizationFishing, bCaptureFishingSpot, CustomWalkSpeed, CustomSprintSpeedMultiplier, CustomClimbingSpeed, CustomGlidingSpeed, CustomGlidingFallSpeed, CustomJumpVelocity, CustomMaxStepHeight, bPlaceAnywhere);
 									}
 									if (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenDisabled)) ImGui::SetTooltip("Discard all unsellable items such as Waterlogged chests when fishing to save inventory space.");
 
 									if (ImGui::Checkbox("Capture fishing spot", &bCaptureFishingSpot)) {
-										SaveConfiguration(bEnableSilentAimbot, bEnableAimbot, bTeleportToTargeted, bAvoidTeleportingToPlayers, bEnableLootbagTeleportation, bAddAnimalToOrbit, bEnableESP, bEnableESPCulling, CullDistance, bDrawFOVCircle, FOVRadius, bEnableInstantFishing, bPerfectCatch, bDoInstantSellFish, bDestroyCustomizationFishing, bCaptureFishingSpot, bOverrideFishingSpot, CustomWalkSpeed, CustomSprintSpeedMultiplier, CustomClimbingSpeed, CustomGlidingSpeed, CustomGlidingFallSpeed, CustomJumpVelocity, CustomMaxStepHeight, bPlaceAnywhere);
+										SaveConfiguration(bEnableSilentAimbot, bEnableAimbot, bTeleportToTargeted, bAvoidTeleportingToPlayers, bEnableLootbagTeleportation, bAddAnimalToOrbit, bEnableESP, bEnableESPCulling, CullDistance, bDrawFOVCircle, FOVRadius, bEnableInstantFishing, bPerfectCatch, bDoInstantSellFish, bDestroyCustomizationFishing, bCaptureFishingSpot, CustomWalkSpeed, CustomSprintSpeedMultiplier, CustomClimbingSpeed, CustomGlidingSpeed, CustomGlidingFallSpeed, CustomJumpVelocity, CustomMaxStepHeight, bPlaceAnywhere);
 									}
-									if (ImGui::Checkbox("Override fishing spot", &bOverrideFishingSpot)) {
-										SaveConfiguration(bEnableSilentAimbot, bEnableAimbot, bTeleportToTargeted, bAvoidTeleportingToPlayers, bEnableLootbagTeleportation, bAddAnimalToOrbit, bEnableESP, bEnableESPCulling, CullDistance, bDrawFOVCircle, FOVRadius, bEnableInstantFishing, bPerfectCatch, bDoInstantSellFish, bDestroyCustomizationFishing, bCaptureFishingSpot, bOverrideFishingSpot, CustomWalkSpeed, CustomSprintSpeedMultiplier, CustomClimbingSpeed, CustomGlidingSpeed, CustomGlidingFallSpeed, CustomJumpVelocity, CustomMaxStepHeight, bPlaceAnywhere);
-									}
+									ImGui::Checkbox("Override fishing spot", &bOverrideFishingSpot);
 
 									ImGui::SameLine();
 									ImGui::Text("%s", sOverrideFishingSpot.ToString().c_str());
@@ -3710,7 +3705,7 @@ void PaliaOverlay::DrawOverlay()
 								if (ImGui::CollapsingHeader("Housing Settings - General", ImGuiTreeNodeFlags_DefaultOpen)) {
 									if (PlacementComponent) {
 										if (ImGui::Checkbox("Place Items Anywhere", &bPlaceAnywhere)) {
-											SaveConfiguration(bEnableSilentAimbot, bEnableAimbot, bTeleportToTargeted, bAvoidTeleportingToPlayers, bEnableLootbagTeleportation, bAddAnimalToOrbit, bEnableESP, bEnableESPCulling, CullDistance, bDrawFOVCircle, FOVRadius, bEnableInstantFishing, bPerfectCatch, bDoInstantSellFish, bDestroyCustomizationFishing, bCaptureFishingSpot, bOverrideFishingSpot, CustomWalkSpeed, CustomSprintSpeedMultiplier, CustomClimbingSpeed, CustomGlidingSpeed, CustomGlidingFallSpeed, CustomJumpVelocity, CustomMaxStepHeight, bPlaceAnywhere);
+											SaveConfiguration(bEnableSilentAimbot, bEnableAimbot, bTeleportToTargeted, bAvoidTeleportingToPlayers, bEnableLootbagTeleportation, bAddAnimalToOrbit, bEnableESP, bEnableESPCulling, CullDistance, bDrawFOVCircle, FOVRadius, bEnableInstantFishing, bPerfectCatch, bDoInstantSellFish, bDestroyCustomizationFishing, bCaptureFishingSpot, CustomWalkSpeed, CustomSprintSpeedMultiplier, CustomClimbingSpeed, CustomGlidingSpeed, CustomGlidingFallSpeed, CustomJumpVelocity, CustomMaxStepHeight, bPlaceAnywhere);
 										}
 									}
 									else {
