@@ -1,5 +1,6 @@
 ﻿#pragma once
 
+#include <variant>
 #include <OverlayBase.h>
 #include <map>
 #include <imgui.h>
@@ -61,6 +62,21 @@ enum class EBugKind {
     MAX
 };
 
+// Function to return the first value of the enum
+constexpr EBugKind begin(EBugKind) {
+    return EBugKind::Bee;
+}
+
+// Function to return the last value of the enum
+constexpr EBugKind end(EBugKind) {
+    return EBugKind::Snail;
+}
+
+// Increment operator for EForageableType
+constexpr EBugKind operator++(EBugKind& e) {
+    return e = static_cast<EBugKind>(static_cast<int>(e) + 1);
+}
+
 enum class EBugQuality {
     Unknown,
     Common,
@@ -70,6 +86,21 @@ enum class EBugQuality {
     Epic,
     MAX
 };
+
+// Function to return the first value of the enum
+constexpr EBugQuality begin(EBugQuality) {
+    return EBugQuality::Common;
+}
+
+// Function to return the last value of the enum
+constexpr EBugQuality end(EBugQuality) {
+    return EBugQuality::Epic;
+}
+
+// Increment operator for EForageableType
+constexpr EBugQuality operator++(EBugQuality& e) {
+    return e = static_cast<EBugQuality>(static_cast<int>(e) + 1);
+}
 
 enum class EGatherableSize {
     Unknown,
@@ -144,14 +175,18 @@ enum class EOneOffs {
     MAX
 };
 
+typedef std::variant<EOreType, ETreeType, EForageableType,
+    EBugKind, ECreatureKind, EFishType> TypeEnum;
+typedef std::variant<EBugQuality, ECreatureQuality, EGatherableSize> VariantEnum;
+
 struct FEntry {
     AActor* Actor;
     FVector WorldPosition;
     std::string DisplayName;
     EType ActorType;
-    int Type;
+    TypeEnum Type;
     int Quality;
-    int Variant;
+    VariantEnum Variant;
     bool shouldAdd;
 };
 
@@ -237,7 +272,6 @@ protected:
     void DrawOverlay() override;
 
 public:
-    void SetupColors();
     void ProcessActors(int);
 
     static std::map<int, std::string> CreatureQualityNames;
@@ -887,91 +921,35 @@ public:
         {EFishType::Hook, {"_Fish_", "_Trash_", "_Fishing"}},
     };
 
-    // Forageables[Type][]
-    bool Singles[static_cast<int>(EOneOffs::MAX)] = {};
-    unsigned int SingleColors[static_cast<int>(EOneOffs::MAX)] = {
-        IM_COL32(0xFF, 0xFF, 0x00, 0xFF),
-        IM_COL32(0xFF, 0xFF, 0xFF, 0xFF),
-        IM_COL32(0xFF, 0xFF, 0xFF, 0xFF),
-        IM_COL32(0xFF, 0xFF, 0xFF, 0xFF),
-        IM_COL32(0x00, 0xFF, 0xFF, 0xFF),
-        IM_COL32(0xFF, 0xFF, 0xFF, 0xFF),
+    EForageableType ForageableCommon[4] = {
+        EForageableType::Oyster,
+        EForageableType::Shell,
+        EForageableType::Sundrop,
+        EForageableType::MushroomRed
     };
 
-    // Forageables[Type][Starred]
-    bool Forageables[static_cast<int>(EForageableType::MAX)][2] = {};
-    unsigned int ForageableColors[static_cast<int>(EForageableType::MAX)] = {};
-
-    int ForageableCommon[4] = {
-        static_cast<int>(EForageableType::Oyster),
-        static_cast<int>(EForageableType::Shell),
-        static_cast<int>(EForageableType::Sundrop),
-        static_cast<int>(EForageableType::MushroomRed)
+    EForageableType ForageableUncommon[9] = {
+        EForageableType::Coral,
+        EForageableType::PoisonFlower,
+        EForageableType::WaterFlower,
+        EForageableType::EmeraldCarpet,
+        EForageableType::SpicedSprouts,
+        EForageableType::SweetLeaves,
+        EForageableType::Garlic,
+        EForageableType::Ginger,
+        EForageableType::GreenOnion
     };
 
-    int ForageableUncommon[9] = {
-        static_cast<int>(EForageableType::Coral),
-        static_cast<int>(EForageableType::PoisonFlower),
-        static_cast<int>(EForageableType::WaterFlower),
-        static_cast<int>(EForageableType::EmeraldCarpet),
-        static_cast<int>(EForageableType::SpicedSprouts),
-        static_cast<int>(EForageableType::SweetLeaves),
-        static_cast<int>(EForageableType::Garlic),
-        static_cast<int>(EForageableType::Ginger),
-        static_cast<int>(EForageableType::GreenOnion)
+    EForageableType ForageableRare[3] = {
+        EForageableType::DragonsBeard,
+        EForageableType::MushroomBlue,
+        EForageableType::HeatRoot
     };
 
-    int ForageableRare[3] = {
-        static_cast<int>(EForageableType::DragonsBeard),
-        static_cast<int>(EForageableType::MushroomBlue),
-        static_cast<int>(EForageableType::HeatRoot)
+    EForageableType ForageableEpic[2] = {
+        EForageableType::Heartdrop,
+        EForageableType::DariCloves
     };
-
-    int ForageableEpic[2] = {
-        static_cast<int>(EForageableType::Heartdrop),
-        static_cast<int>(EForageableType::DariCloves)
-    };
-
-    // Ores[Type][Size]
-    bool Ores[static_cast<int>(EOreType::MAX)][static_cast<int>(EGatherableSize::MAX)] = {};
-
-    unsigned int OreColors[static_cast<int>(EOreType::MAX)] = {
-        IM_COL32(0xFF, 0xFF, 0xFF, 0xFF),
-        IM_COL32(0x88, 0x8C, 0x8D, 0xFF), // Stone
-        IM_COL32(0xB8, 0x73, 0x33, 0xFF), // Copper
-        IM_COL32(0xAD, 0x50, 0x49, 0xFF), // Clay
-        IM_COL32(0xA1, 0x9D, 0x94, 0xFF), // Iron
-        IM_COL32(0xAA, 0xA9, 0xAD, 0xFF), // Silver
-        IM_COL32(0xDB, 0xAC, 0x34, 0xFF), // Gold
-        IM_COL32(0x94, 0xA0, 0xE2, 0xFF), // Palium
-    };
-
-    // Animals[Type][Size]
-    bool Animals[static_cast<int>(ECreatureKind::MAX)][static_cast<int>(ECreatureQuality::MAX)] = {};
-    unsigned int AnimalColors[static_cast<int>(ECreatureKind::MAX)][static_cast<int>(ECreatureQuality::MAX)] = {};
-
-    // Bugs[Type][Size][Starred]
-    bool Bugs[static_cast<int>(EBugKind::MAX)][static_cast<int>(EBugQuality::MAX)][2] = {};
-    unsigned int BugColors[static_cast<int>(EBugKind::MAX)][static_cast<int>(EBugQuality::MAX)] = {};
-
-    // Trees[Type][Size]
-    bool Trees[static_cast<int>(ETreeType::MAX)][static_cast<int>(EGatherableSize::MAX)] = {};
-    unsigned int TreeColors[static_cast<int>(ETreeType::MAX)] = {
-        IM_COL32(0xFF, 0xFF, 0xFF, 0xFF),
-        IM_COL32(0x67, 0x00, 0xEA, 0xFF),
-        IM_COL32(0x00, 0xFF, 0x00, 0xFF),
-        IM_COL32(0x00, 0xFF, 0x00, 0xFF),
-        IM_COL32(0xFF, 0xFF, 0xFF, 0xFF),
-    };
-
-    // Trees[Type][Size]
-    bool Fish[static_cast<int>(EFishType::MAX)] = {};
-    unsigned int FishColors[static_cast<int>(EFishType::MAX)] = {
-        IM_COL32(0xFF, 0xFF, 0xFF, 0xFF),
-        IM_COL32(0xFF, 0xFF, 0xFF, 0xFF),
-        IM_COL32(0xFF, 0xFF, 0xFF, 0xFF),
-    };
-
     // ==================================== //
 
     int TeleportHotkey = VK_XBUTTON1;

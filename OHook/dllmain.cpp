@@ -45,7 +45,6 @@ DWORD WINAPI MainThread(const LPVOID lpReserved) {
 
     const auto Overlay = new PaliaOverlay();
     OverlayBase::Instance = Overlay;
-    Overlay->SetupColors();
     Overlay->SetupOverlay();
 
     // Wait for the thread to finish

@@ -9,6 +9,7 @@
 #include <Windows.h>
 #include <ShlObj.h>
 #include <tchar.h>
+#include "Configuration.h"
 
 #ifndef M_PI
 #define M_PI 3.14159265358979323846
@@ -150,35 +151,32 @@ SearchType GetFlagMulti(std::string Text, std::map<SearchType, std::vector<std::
     return T;
 }
 
-template <size_t size_x>
-bool AnyTrue(bool (&arr)[size_x]) {
-    for (int x = 0; x < size_x; x++) {
-        if (arr[x])
-            return true;
+template <typename K, typename V>
+bool AnyTrue(const std::map<K, V>& map) {
+    bool anyTrue = false;
+    for (const auto& pair : map) {
+        if constexpr (std::is_same_v<V, ESPStarItem>) {
+            anyTrue |= pair.second.Normal;
+			anyTrue |= pair.second.Star;
+		}
+		else if constexpr (std::is_same_v<V, ESPSingleItem>) {
+			anyTrue |= pair.second.Enabled;
+		}
+		else if constexpr (std::is_same_v<V, ESPSizeItem>) {
+			anyTrue |= pair.second.Small;
+			anyTrue |= pair.second.Medium;
+			anyTrue |= pair.second.Large;
+        }
+        if (anyTrue) return true;
     }
-    return false;
+    return anyTrue;
 }
 
-template <size_t size_x, size_t size_y>
-bool AnyTrue2D(bool (&arr)[size_x][size_y]) {
-    for (int x = 0; x < size_x; x++) {
-        for (int y = 0; y < size_y; y++) {
-            if (arr[x][y])
-                return true;
-        }
-    }
-    return false;
-}
-
-template <size_t size_x, size_t size_y, size_t size_z>
-bool AnyTrue3D(bool (&arr)[size_x][size_y][size_z]) {
-    for (int x = 0; x < size_x; x++) {
-        for (int y = 0; y < size_y; y++) {
-            for (int z = 0; z < size_z; z++) {
-                if (arr[x][y][z])
-                    return true;
-            }
-        }
+template <typename K, typename V>
+bool AnyTrue2D(const std::map<K, V>& map) {
+    bool anyTrue = false;
+    for (const auto& pair : map) {
+        if (AnyTrue(pair.second)) return true;
     }
     return false;
 }

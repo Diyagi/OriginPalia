@@ -1,331 +1,272 @@
 #pragma once
-#include <string>
-#include <type_traits>
+#include <json.hpp>
+#include "PaliaOverlay.h"
+using json = nlohmann::json;
+
+#pragma region ESPConfig
+struct ESPStarItem {
+	bool Normal = false;
+	bool Star = false;
+	unsigned int Color;
+
+	bool Enabled(int quality) {
+		if (quality == 1) return Star;
+		else return Normal;
+	}
+};
+
+struct ESPSingleItem {
+	bool Enabled = false;
+	unsigned int Color;
+};
+
+struct ESPSizeItem {
+	bool Default = false;
+	bool Small = false;
+	bool Medium = false;
+	bool Large = false;
+	unsigned int Color;
+
+	bool* Enabled(EGatherableSize size) {
+		switch (size) {
+		case EGatherableSize::Bush:
+		case EGatherableSize::Small:
+			return &Small;
+			break;
+		case EGatherableSize::Medium:
+			return &Medium;
+			break;
+		case EGatherableSize::Large:
+			return &Large;
+			break;
+		default:
+			return &Default;
+			break;
+		}
+	}
+};
+
+typedef std::map<ECreatureQuality, ESPSingleItem> AnimalQuality;
+typedef std::map<ECreatureKind, AnimalQuality> AnimalConfig;
+
+typedef std::map<EBugQuality, ESPStarItem> BugQuality;
+typedef std::map<EBugKind, BugQuality> BugConfig;
+
+typedef std::map<EOreType, ESPSizeItem> OresConfig;
+typedef std::map<ETreeType, ESPSizeItem> TreeConfig;
+typedef std::map<EForageableType, ESPStarItem> ForageablesConfig;
+
+NLOHMANN_JSON_SERIALIZE_ENUM(ECreatureQuality, {
+	{ECreatureQuality::Tier1, "Tier1"},
+	{ECreatureQuality::Tier2, "Tier2"},
+	{ECreatureQuality::Tier3, "Tier3"},
+	{ECreatureQuality::Chase, "Chase"}
+	});
+NLOHMANN_JSON_SERIALIZE_ENUM(ECreatureKind, {
+	{ECreatureKind::Chapaa, "Chapaa"},
+	{ECreatureKind::Cearnuk, "Cearnuk"},
+	{ECreatureKind::TreeClimber, "TreeClimber"}
+	});
+NLOHMANN_JSON_SERIALIZE_ENUM(EBugQuality, {
+	{EBugQuality::Common, "Common"},
+	{EBugQuality::Uncommon, "Uncommon"},
+	{EBugQuality::Rare, "Rare"},
+	{EBugQuality::Rare2, "Rare2"},
+	{EBugQuality::Epic, "Epic"}
+	});
+NLOHMANN_JSON_SERIALIZE_ENUM(EBugKind, {
+	{EBugKind::Bee, "Bee"},
+	{EBugKind::Beetle, "Beetle"},
+	{EBugKind::Butterfly, "Butterfly"},
+	{EBugKind::Cicada, "Cicada"},
+	{EBugKind::Crab, "Crab"},
+	{EBugKind::Cricket, "Cricket"},
+	{EBugKind::Dragonfly, "Dragonfly"},
+	{EBugKind::Glowbug, "Glowbug"},
+	{EBugKind::Ladybug, "Ladybug"},
+	{EBugKind::Mantis, "Mantis"},
+	{EBugKind::Moth, "Moth"},
+	{EBugKind::Pede, "Pede"},
+	{EBugKind::Snail, "Snail"}
+	});
+NLOHMANN_JSON_SERIALIZE_ENUM(EOreType, {
+	{EOreType::Stone, "Stone"},
+	{EOreType::Copper, "Copper"},
+	{EOreType::Clay, "Clay"},
+	{EOreType::Iron, "Iron"},
+	{EOreType::Palium, "Palium"}
+	});
+NLOHMANN_JSON_SERIALIZE_ENUM(ETreeType, {
+	{ETreeType::Flow, "Flow"},
+	{ETreeType::Heartwood, "Heartwood"},
+	{ETreeType::Sapwood, "Sapwood"},
+	{ETreeType::Bush, "Bush"}
+	});
+NLOHMANN_JSON_SERIALIZE_ENUM(EForageableType, {
+	{EForageableType::Oyster, "Oyster"},
+	{EForageableType::Coral, "Coral"},
+	{EForageableType::MushroomBlue, "MushroomBlue"},
+	{EForageableType::MushroomRed, "MushroomRed"},
+	{EForageableType::Heartdrop, "Heartdrop"},
+	{EForageableType::DragonsBeard, "DragonsBeard"},
+	{EForageableType::EmeraldCarpet, "EmeraldCarpet"},
+	{EForageableType::PoisonFlower, "PoisonFlower"},
+	{EForageableType::Shell, "Shell"},
+	{EForageableType::DariCloves, "DariCloves"},
+	{EForageableType::HeatRoot, "HeatRoot"},
+	{EForageableType::SpicedSprouts, "SpicedSprouts"},
+	{EForageableType::Sundrop, "Sundrop"},
+	{EForageableType::SweetLeaves, "SweetLeaves"},
+	{EForageableType::WaterFlower, "WaterFlower"},
+	{EForageableType::Garlic, "Garlic"},
+	{EForageableType::Ginger, "Ginger"},
+	{EForageableType::GreenOnion, "GreenOnion"}
+	});
+
+struct ESPConfig {
+	bool Enabled = true;
+	bool Culling = true;
+	bool DrawFOVCircle = true;
+	bool DespawnTimer = true;
+	int CullDistance = 200;
+	float FOVRadius = 185.0f;
+	float TextScale = 1.0f;
+
+	struct PlayerEntities {
+		ESPSingleItem Player;
+		ESPSingleItem NPC;
+		ESPSingleItem FishHook;
+		ESPSingleItem FishPool;
+		ESPSingleItem Loot;
+		ESPSingleItem Quest;
+		ESPSingleItem RummagePiles;
+		ESPSingleItem Stables;
+		ESPSingleItem Others;
+	} PlayerEntities;
+
+	OresConfig Ores = {};
+	TreeConfig Trees = {};
+	AnimalConfig Animals = {};
+	ForageablesConfig Forageables = {};
+	BugConfig Bugs = {};
+};
+#pragma endregion
+
+#pragma region Config
+struct WindowSize {
+	float X = 1450.0f;
+	float Y = 950.0f;
+};
+
+struct GameModifiers {
+	float CustomWalkSpeed = 565.0f;
+	float CustomSprintSpeedMultiplier = 1.65f;
+	float CustomClimbingSpeed = 80.0f;
+	float CustomGlidingSpeed = 900.0f;
+	float CustomGlidingFallSpeed = 250.0f;
+	float CustomJumpVelocity = 700.0f;
+	float CustomMaxStepHeight = 45.0f;
+};
+
+struct Fishing {
+	bool NoDurability = true;
+	bool MultiplayerHelp = false;
+	bool InstantCatch = false;
+	bool PerfectCatch = true;
+	bool SellFish = false;
+	bool DiscardTrash = false;
+	bool OpenStoreWaterlogged = false;
+	bool RequireClickFishing = true;
+};
+
+struct Teleport {
+	bool WaypointTeleport = false;
+	bool TeleportToTargeted = false;
+	bool AvoidTeleportingToPlayers = true;
+	bool RadiusPlayersAvoidance = true;
+	bool LootbagTeleportation = false;
+	int AvoidanceRadius = 30;
+};
+
+struct Housing {
+	bool PlaceAnywhere = false;
+	bool ManualPositionAdjustment = false;
+	float MaxUpAngle = 360.0f;
+};
+
+struct Aimbot {
+	bool LegacyAimbot = false;
+	bool SilentAimbot = false;
+};
+
+struct Misc {
+	bool AntiAfk = false;
+	bool MinigameSkip = false;
+	bool QuicksellHotkeys = false;
+	bool ChallengeEasyMode = false;
+	bool ShowWatermark = true;
+};
+#pragma endregion
 
 // Forward declaration of PaliaOverlay class
 class PaliaOverlay;
 
 class Configuration final {
 private:
-	static void LoadESPArraysPtr(PaliaOverlay* Overlay);
-	static bool ReadJsonFile();
-	static void ParseBool(std::string Key, bool& Var);
-	static void ParseBool(std::string Key, bool& Var, bool DefaultValue);
-
-	template<typename T>
-	static void ParseNumber(std::string Key, T& Var);
-
-	static std::string JsonConfigFile;
+	static void InitializeDefaultColors();
 	static bool ConfigLoaded;
-
-public:
-	static void Load(PaliaOverlay* Overlay);
-	static void Save();
-
-#pragma region ConfigVars
-
-	// Config Version
-	// Will be used in the future for migrations
 	static int Version;
 
-	// Crafting Cooking Booleans
-	// bool bEnableInstantCraftingCooking;
-
-	// Window configs
-	static float windowSizeX;
-	static float windowSizeY;
-
-	// Game Modifiers
-	static float CustomWalkSpeed; // Custom, Dynamic walk speed
-	static float CustomSprintSpeedMultiplier; // Custom, Dynamic sprint speed multiplier
-	static float CustomClimbingSpeed; // Custom, Dynamic climbing speed
-	static float CustomGlidingSpeed; // Custom, Dynamic gliding speed
-	static float CustomGlidingFallSpeed; // Custom, Dynamic gliding fall speed
-	static float CustomJumpVelocity; // Custom, Dynamic jump velocity
-	static float CustomMaxStepHeight; // Custom, Dynamic maximum step height
-
-	// Fishing Options
-	static bool bFishingNoDurability;
-	static bool bFishingMultiplayerHelp;
-	static bool bFishingInstantCatch;
-	static bool bFishingPerfectCatch;
-	static bool bFishingSell;
-	static bool bFishingDiscard;
-	static bool bFishingOpenStoreWaterlogged;
-	static bool bRequireClickFishing;
-
-	// Item Booleans
-	static bool bEasyModeActive;
-	static bool bEnableLootbagTeleportation;
-	static bool bEnableWaypointTeleport;
-
-	// Housing
-	static bool bPlaceAnywhere;
-	static bool bManualPositionAdjustment;
-	static float fMaxUpAngle;
-
-	// Quicksell Hotkeys
-	static bool bEnableQuicksellHotkeys;
-
-	// Fun Mods
-	static bool bEnableAntiAfk;
-	static bool bEnableMinigameSkip;
-
-	static float FOVRadius;
-	static int AvoidanceRadius;
-
-#pragma region ESP
-
-	// ESP Booleans
-
-	static bool bShowWatermark;
-
-	static bool bEnableESP;
-	static bool bEnableAimbot;
-	static bool bEnableSilentAimbot;
-	static bool bDrawFOVCircle;
-	static bool bTeleportToTargeted;
-	static bool bAvoidTeleportingToPlayers;
-	static bool bDoRadiusPlayersAvoidance;
-	static bool bEnableESPCulling;
-	static bool bEnableDespawnTimer;
-
-	// ESP Numericals
-
-	static float ESPTextScale;
-	static int CullDistance;
-
-	// ESP Animals
-
-	static bool* bEnableSernuk;
-	static bool* bEnableElderSernuk;
-	static bool* bEnableProudhornSernuk;
-	static bool* bEnableChapaa;
-	static bool* bEnableStripedChapaa;
-	static bool* bEnableAzureChapaa;
-	static bool* bEnableMinigameChapaa;
-	static bool* bEnableMuujin;
-	static bool* bEnableBandedMuujin;
-	static bool* bEnableBluebristleMuujin;
-
-	// ESP Ores
-
-	static bool* bEnableClayLg;
-
-	static bool* bEnableStoneSm;
-	static bool* bEnableStoneMed;
-	static bool* bEnableStoneLg;
-
-	static bool* bEnableCopperSm;
-	static bool* bEnableCopperMed;
-	static bool* bEnableCopperLg;
-
-	static bool* bEnableIronSm;
-	static bool* bEnableIronMed;
-	static bool* bEnableIronLg;
-
-	static bool* bEnablePaliumSm;
-	static bool* bEnablePaliumMed;
-	static bool* bEnablePaliumLg;
-
-	// ESP Forage Types
-
-	static bool* bEnableCoral;
-	static bool* bEnableOyster;
-	static bool* bEnableShell;
-
-	static bool* bEnablePoisonFlower;
-	static bool* bEnablePoisonFlowerP;
-
-	static bool* bEnableWaterFlower;
-	static bool* bEnableWaterFlowerP;
-
-	static bool* bEnableHeartdrop;
-	static bool* bEnableHeartdropP;
-
-	static bool* bEnableSundrop;
-	static bool* bEnableSundropP;
-
-	static bool* bEnableDragonsBeard;
-	static bool* bEnableDragonsBeardP;
-
-	static bool* bEnableEmeraldCarpet;
-	static bool* bEnableEmeraldCarpetP;
-
-	static bool* bEnableMushroomBlue;
-	static bool* bEnableMushroomBlueP;
-
-	static bool* bEnableMushroomRed;
-	static bool* bEnableMushroomRedP;
-
-	static bool* bEnableDariCloves;
-	static bool* bEnableDariClovesP;
-
-	static bool* bEnableHeatRoot;
-	static bool* bEnableHeatRootP;
-
-	static bool* bEnableSpicedSprouts;
-	static bool* bEnableSpicedSproutsP;
-
-	static bool* bEnableSweetLeaves;
-	static bool* bEnableSweetLeavesP;
-
-	static bool* bEnableGarlic;
-	static bool* bEnableGarlicP;
-
-	static bool* bEnableGinger;
-	static bool* bEnableGingerP;
-
-	static bool* bEnableGreenOnion;
-	static bool* bEnableGreenOnionP;
-
-	// ESP Bug Types
-
-	static bool* bEnableBeeU;
-	static bool* bEnableBeeUP;
-
-	static bool* bEnableBeeR;
-	static bool* bEnableBeeRP;
-
-	static bool* bEnableBeetleC;
-	static bool* bEnableBeetleCP;
-
-	static bool* bEnableBeetleU;
-	static bool* bEnableBeetleUP;
-
-	static bool* bEnableBeetleR;
-	static bool* bEnableBeetleRP;
-
-	static bool* bEnableBeetleE;
-	static bool* bEnableBeetleEP;
-
-	static bool* bEnableButterflyC;
-	static bool* bEnableButterflyCP;
-
-	static bool* bEnableButterflyU;
-	static bool* bEnableButterflyUP;
-
-	static bool* bEnableButterflyR;
-	static bool* bEnableButterflyRP;
-
-	static bool* bEnableButterflyE;
-	static bool* bEnableButterflyEP;
-
-	static bool* bEnableCicadaC;
-	static bool* bEnableCicadaCP;
-
-	static bool* bEnableCicadaU;
-	static bool* bEnableCicadaUP;
-
-	static bool* bEnableCicadaR;
-	static bool* bEnableCicadaRP;
-
-	static bool* bEnableCrabC;
-	static bool* bEnableCrabCP;
-
-	static bool* bEnableCrabU;
-	static bool* bEnableCrabUP;
-
-	static bool* bEnableCrabR;
-	static bool* bEnableCrabRP;
-
-	static bool* bEnableCricketC;
-	static bool* bEnableCricketCP;
-
-	static bool* bEnableCricketU;
-	static bool* bEnableCricketUP;
-
-	static bool* bEnableCricketR;
-	static bool* bEnableCricketRP;
-
-	static bool* bEnableDragonflyC;
-	static bool* bEnableDragonflyCP;
-
-	static bool* bEnableDragonflyU;
-	static bool* bEnableDragonflyUP;
-
-	static bool* bEnableDragonflyR;
-	static bool* bEnableDragonflyRP;
-
-	static bool* bEnableDragonflyE;
-	static bool* bEnableDragonflyEP;
-
-	static bool* bEnableGlowbugC;
-	static bool* bEnableGlowbugCP;
-
-	static bool* bEnableGlowbugU;
-	static bool* bEnableGlowbugUP;
-
-	static bool* bEnableLadybugC;
-	static bool* bEnableLadybugCP;
-
-	static bool* bEnableLadybugU;
-	static bool* bEnableLadybugUP;
-
-	static bool* bEnableMantisU;
-	static bool* bEnableMantisUP;
-
-	static bool* bEnableMantisR;
-	static bool* bEnableMantisRP;
-
-	static bool* bEnableMantisR2;
-	static bool* bEnableMantisR2P;
-
-	static bool* bEnableMantisE;
-	static bool* bEnableMantisEP;
-
-	static bool* bEnableMothC;
-	static bool* bEnableMothCP;
-
-	static bool* bEnableMothU;
-	static bool* bEnableMothUP;
-
-	static bool* bEnableMothR;
-	static bool* bEnableMothRP;
-
-	static bool* bEnablePedeU;
-	static bool* bEnablePedeUP;
-
-	static bool* bEnablePedeR;
-	static bool* bEnablePedeRP;
-
-	static bool* bEnablePedeR2;
-	static bool* bEnablePedeR2P;
-
-	static bool* bEnableSnailU;
-	static bool* bEnableSnailUP;
-
-	static bool* bEnableSnailR;
-	static bool* bEnableSnailRP;
-
-	// ESP Trees
-
-	static bool* bEnableBushSm;
-
-	static bool* bEnableSapwoodSm;
-	static bool* bEnableSapwoodMed;
-	static bool* bEnableSapwoodLg;
-
-	static bool* bEnableHeartwoodSm;
-	static bool* bEnableHeartwoodMed;
-	static bool* bEnableHeartwoodLg;
-
-	static bool* bEnableFlowSm;
-	static bool* bEnableFlowMed;
-	static bool* bEnableFlowLg;
-
-	// ESP Player & Entities
-
-	static bool* bEnablePlayers;
-	static bool* bEnableNPC;
-	static bool* bEnableFish;
-	static bool* bEnablePools;
-	static bool* bEnableLoot;
-	static bool* bEnableQuest;
-	static bool* bEnableRummagePiles;
-	static bool* bEnableStables;
-	static bool  bEnableOthers;
-
-#pragma endregion
-#pragma endregion
+public:
+	static void Load();
+	static void Save();
+	static bool IsUnknown(const TypeEnum& type);
+
+	template <typename T>
+	static T GetConfig(const TypeEnum& type, const VariantEnum& variant) {
+		return std::visit([&](auto&& argType) -> T {
+			using Type = std::decay_t<decltype(argType)>;
+			if constexpr (std::is_same_v<Type, EBugKind>) {
+				if (std::holds_alternative<EBugQuality>(variant)) {
+					return Configuration::ESP.Bugs[argType][std::get<EBugQuality>(variant)];
+				}
+			}
+			else if constexpr (std::is_same_v<Type, ECreatureKind>) {
+				if (std::holds_alternative<ECreatureQuality>(variant)) {
+					return Configuration::ESP.Animals[argType][std::get<ECreatureQuality>(variant)];
+				}
+			}
+			return T{};
+			}, type);
+	};
+
+	template <typename T>
+	static T GetConfig(const TypeEnum& type) {
+		return std::visit([](auto&& arg) -> T {
+			using Type = std::decay_t<decltype(arg)>;
+			if constexpr (std::is_same_v<Type, EOreType>) {
+				return Configuration::ESP.Ores[arg];
+			}
+			else if constexpr (std::is_same_v<Type, ETreeType>) {
+				return Configuration::ESP.Trees[arg];
+			}
+			else if constexpr (std::is_same_v<Type, EForageableType>) {
+				return Configuration::ESP.Forageables[arg];
+			}
+			else if constexpr (std::is_same_v<Type, EFishType>) {
+				if (arg == EFishType::Hook) return Configuration::ESP.PlayerEntities.FishHook;
+				else if (arg == EFishType::Node) return Configuration::ESP.PlayerEntities.FishPool;
+			}
+			return T{};
+			}, type);
+	};
+
+	static WindowSize WindowSize;
+	static GameModifiers GameModifiers;
+	static Fishing Fishing;
+	static Teleport Teleport;
+	static Housing Housing;
+	static Aimbot Aimbot;
+	static Misc Misc;
+	static ESPConfig ESP;
 };

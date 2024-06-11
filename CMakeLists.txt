@@ -34,6 +34,9 @@ add_library(imgui STATIC ${IMGUI_SOURCES} ${IMGUI_HEADERS})
 target_include_directories(imgui PUBLIC ImGui glew/include)
 target_compile_definitions(imgui PRIVATE IMGUI_DEFINE_MATH_OPERATORS $<$<BOOL:${WIN32}>:GLEW_STATIC>)
 
+# nlohmann/json
+include_directories(${CMAKE_SOURCE_DIR}/nlohmann)
+
 # RendererHook
 file(GLOB_RECURSE RENDERERHOOK_SOURCES RendererHook/*.cpp)
 file(GLOB_RECURSE RENDERERHOOK_HEADERS RendererHook/*.h)
