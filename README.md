@@ -37,69 +37,8 @@ More information can be found at: [PaliaSDK README](https://github.com/Wimberton
 
 <img align="center" src="https://i.gyazo.com/a31227e25a080e65054a4737a4baa6e1.png" width="auto" height="auto">
 
-### ESP & Visuals:
-- Enable ESP *(enable or disable drawing ESPs in-game)*
-- Limit ESP Distance *(change the distance in which ESPs will show)*
-- Show unclassified entities *(shows potentially unnamed or unmapped entities. Good for getting more from updates etc)*
-
-### Player & Entities ESP
-Players, NPCs, Fish, Fish Pools, Loot, Quests, Rummage Piles, and Stables.
-### Ores ESP
-Options to toggle visibility and color customization for various sizes (Small, Medium, Large) of ores like Clay, Stone, Copper, Iron, and Palium.
-### Forageables ESP
-Toggle settings for various types of forageables, each with normal and starred versions. Coral, Oyster, Shells, various flowers, moss types, mushrooms, spices, and vegetables.
-### Trees ESP
-Control visibility and customize color settings for various types and sizes of trees, including Bush, Sapwood, Heartwood, and Flow-Infused types.
-### Animals ESP
-Quality tiers such as Sernuk, Chapaa, and Muujin, including special categories like minigame-specific animals.
-### Bugs ESP
-Common, uncommon, rare, and epic qualities. Manage settings for bugs like Bees, Beetles, Butterflies, Cicadas, Crabs, Crickets, Dragonflies, Glowbugs, Ladybugs, Mantises, Moths, Pedes, and Snails.
-
-### Selling & Items:
-- Quick Sell Items interface *(sell preset or custom amounts of items from your inventory slots)*
-
-### Aimbots & Fun:
-- Silent Aimbot *(within ~25-30m or shots won't teleport and validate)*
-- Legacy Aimbot *(work-in-progress / camera boom angle changes when aiming. Working on predictive angle offsetting during this bow transition)*
-- Aim Smoothing slider *(makes your aim less sticky. Easier to target other animals)*
-- Aim Offset Adjustment draggable grid *(should help adjust the issue with bow aiming camera boom changes for now)*
-- Enable FOV Circle *(FOV circle with advanced targeting functionality based on entity scoring)*
-- Teleport To Targeted entity *(bottom side mouse button)*
-- Anti AFK *(never get kicked for inactivity, helpful during long fishing sessions)*
-- Avoid teleporting to players *(safeguard for avoiding teleportation to player entities)*
-- Avoid teleporting when players are near *(safeguard for potentially exposing your cheat to others.)*
-- Teleport Dropped Loot To Player *(automatically teleport all dropped loot to your player to gather)*
-
-### Movement & Teleportation:
-- Enable NoClip *(fly around the map without restrictions. Hooks your WASD keys for movement)*
-- Teleport to map waypoint *(Instantly teleport to your map waypoint for faster traversal)*
-- Selectable Movement Modes (Walking, Flying, Fly No Collision) *(another way to mess with your movement types)*
-- Global Game Speed input *(changes your global game speed [timescale mod])*
-- Walk Speed input *(change the speed of your player walking. Has issues above "high")*
-- Climbing Speed input *(change the speed of your player climbing. Should work all the way)*
-- Gliding Speed input *(change the speed of your player gliding. Haven't noticed any issues)*
-- Gliding Fall Speed input *(set this to "none" for 1.0 gliding fall speed. Glide forever and get where you want)*
-- Jump Velocity input *(change the jump height of your player)*
-- Step Height input *(change the step height of your player. Step over massive walls and such)*
-
-### Fishing Settings:
-- Enable Instant Fishing *(force end fishing when your bobber hits the water)*
-- Perfect Catch option *(choose whether your catch was perfect or not every time)*
-- Enable Fast Fishing *(Automatically re-cast your fishing rod, with the option for left-click requirement or fully autonomous)*
-- Instant Sell All Fish *(Automatically sell all fish from every inventory slot)*
-- Discard Non-Fish *(Automatically discard non-fish items from your inventory when fishing. Open a shop once for this to work)*
-- Open Waterlogged Chests & Store Them *(Automatically opens all waterlogged chests and sends the item to your home storage during fishing)*
-- Force fishing pool *(selectable dropdown of available fishing pools to force fish from)*
-
-### Locations & Coordinates:
-- Display current coordinates *(use these coordinates to perform certain actions)*
-- Teleport to locations on list *(a good list of easily teleportable locations to efficiently perform tasks such as shopping, repairing, etc)*
-- Teleport to gatherables on list *(a good list of easily teleportable locations to efficiently collect gatherables around the world)*
-- Custom coordinate input *(enter or get custom coordinates to perform certain actions)*
-- Buttons for teleport actions *(teleport home, to locations, and other actions)*
-
-### Housing Features:
-- Place housing objects anywhere *(decorate your house anyway you'd like)*
+All OriginPalia Features are listed in the UnknownCheats thread below. We keep this list up-to-date with our current builds.
+[Click me to view features](https://www.unknowncheats.me/forum/palia/636934-originpalia-feature-packed-multitool-imagine.html)
 
 <img align="center" src="https://i.gyazo.com/5054c7286fd254ebd39a52f196b05a20.png" width="auto" height="auto">
 
