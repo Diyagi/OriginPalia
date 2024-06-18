@@ -35,9 +35,9 @@ More information can be found at: [PaliaSDK README](https://github.com/Wimberton
 - GLEW
 - Detours
 
-<img align="center" src="https://i.gyazo.com/a31227e25a080e65054a4737a4baa6e1.png" width="auto" height="auto">
+All OriginPalia Features are listed in the UnknownCheats thread below.
+We keep this list up-to-date with our current builds.
 
-All OriginPalia Features are listed in the UnknownCheats thread below. We keep this list up-to-date with our current builds.
 [Click me to view features](https://www.unknowncheats.me/forum/palia/636934-originpalia-feature-packed-multitool-imagine.html)
 
 <img align="center" src="https://i.gyazo.com/5054c7286fd254ebd39a52f196b05a20.png" width="auto" height="auto">
