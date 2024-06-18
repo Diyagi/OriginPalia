@@ -36,7 +36,7 @@ More information can be found at: [PaliaSDK README](https://github.com/Wimberton
 - Detours
 
 All OriginPalia Features are listed in the UnknownCheats thread below.
-We keep this list up-to-date. [Click me to view features](https://www.unknowncheats.me/forum/palia/636934-originpalia-feature-packed-multitool-imagine.html)
+We keep this list up-to-date. [View features](https://www.unknowncheats.me/forum/palia/636934-originpalia-feature-packed-multitool-imagine.html)
 
 <img align="center" src="https://i.gyazo.com/5054c7286fd254ebd39a52f196b05a20.png" width="auto" height="auto">
 
